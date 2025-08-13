@@ -1,24 +1,25 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Testovoe.Models;
 
 
 public class TenderService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<TenderService> _logger;
-    private readonly String? tendersFilePath;
+    private readonly String? _tendersFilePath;
 
-    public TenderService(ILogger<TenderService> logger ,IConfiguration config)
+    public TenderService(ILogger<TenderService> logger , IConfiguration config)
     {
         _config = config;
         _logger = logger;
-        tendersFilePath = _config["TendersFile:Path"];
+        _tendersFilePath = _config["TendersFile:Path"];
     }
 
     public async Task<List<TenderJson>> GetAllAsync(CancellationToken ct = default)
     {
-        var path = tendersFilePath;
+        var path = _tendersFilePath;
         if (!File.Exists(path))
         {
             GetEmptyTenderJson("Исходный файл не найден");
@@ -60,7 +61,6 @@ public class TenderService
                 return null;
             }
 
-            //По хорошему поменять
             var title = getString("Название тендера");
             var start = getString("Дата начала");
             var end = getString("Дата окончания");
@@ -82,10 +82,7 @@ public class TenderService
             var edt = isCellDate(row, "Дата окончания") ? parseDate(end) : null;
 
             if (string.IsNullOrEmpty(title) && string.IsNullOrEmpty(url) && sdt == null && edt == null)
-            {
-                // пустая строка — пропустить
                 continue;
-            }
 
             list.Add(new TenderJson
             {
@@ -117,7 +114,7 @@ public class TenderService
 
     private List<TenderJson> GetEmptyTenderJson(string message)
     {
-        _logger.LogWarning($"{message}: {tendersFilePath}");
+        _logger.LogWarning($"{message}: {_tendersFilePath}");
         return [];
     }
 }

@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Testovoe.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
-    [Route("api/[controller]")]
-    public class TendersController : ControllerBase
+    [Route("api/tenders")]
+    public class TenderAPIController : ControllerBase
     {
         private readonly TenderService _tenderService;
-        private readonly ILogger<TendersController> _logger;
+        private readonly ILogger<TenderAPIController> _logger;
 
-        public TendersController(TenderService tenderService, ILogger<TendersController> logger)
+        public TenderAPIController(TenderService tenderService, ILogger<TenderAPIController> logger)
         {
             _tenderService = tenderService;
             _logger = logger;
